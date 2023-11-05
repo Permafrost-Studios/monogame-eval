@@ -11,6 +11,11 @@ using MonoGame.Extended;
 using MonoGame.Extended.SceneGraphs;
 using MonoGame.Extended.Sprites;
 using MonoGame.Extended.ViewportAdapters;
+using MonoGame.Extended.Entities;
+
+using monogame_eval_project.Systems;
+using monogame_eval_project.Components;
+using System.Diagnostics;
 
 namespace monogame_eval_project.GameScreens
 {
@@ -26,7 +31,18 @@ namespace monogame_eval_project.GameScreens
 
         private float _speed = 0.15f;
 
+        private World _world;
 
+        Entity Player;
+
+        public override void Initialize()
+        {
+            base.Initialize();
+
+            _world = new WorldBuilder()
+            .AddSystem(new PlayerBehaviourSystem())
+            .Build();
+        }
         public override void LoadContent()
         {
             base.LoadContent();
@@ -40,11 +56,13 @@ namespace monogame_eval_project.GameScreens
             _playerNode.Entities.Add(new SpriteEntity(playerSprite));
 
             _sceneGraph.RootNode.Children.Add(_playerNode);
+
+            SpawnPlayer();
         }
 
         public override void Update(GameTime gameTime)
         {
-            _playerNode.Rotation += _speed;
+            _world.Update(gameTime);
         }
 
         public override void Draw(GameTime gameTime)
@@ -56,6 +74,18 @@ namespace monogame_eval_project.GameScreens
             Game._spriteBatch.Draw(_sceneGraph);
 
             Game._spriteBatch.End();
+
+            _world.Draw(gameTime);
+        }
+
+        void SpawnPlayer()
+        {
+            Player = _world.CreateEntity();
+            Player.Attach(new Transform2(0, 0));
+            Player.Attach(new Player());
+            Player.Attach(_playerNode);
+
+            Debug.WriteLine("I CAN RUN FUNCTIONSFSFSFSFDSFDSFF");
         }
     }
 }

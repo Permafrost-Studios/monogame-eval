@@ -4,6 +4,8 @@ using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended.Entities;
 using MonoGame.Extended.Screens;
 using MonoGame.Extended.Screens.Transitions;
+using monogame_eval_project.Systems;
+using MonoGame.Extended;
 
 namespace monogame_eval_project
 {
@@ -16,10 +18,6 @@ namespace monogame_eval_project
 
         public int ScreenWidth { get; }
         public int ScreenHeight { get; }
-
-        World _world = new WorldBuilder()
-            .AddSystem(new Systems.TestSystem(_spriteBatch))
-            .Build();
 
         public GameBase(int width = 1920, int height = 1080)
         {
@@ -64,8 +62,6 @@ namespace monogame_eval_project
                 Exit();
             }
 
-            _world.Update(gameTime);
-
 
             // TODO: Add your update logic here
 
@@ -74,7 +70,6 @@ namespace monogame_eval_project
 
         protected override void Draw(GameTime gameTime)
         {
-            _world.Draw(gameTime);
 
             // TODO: Add your drawing code here
 
