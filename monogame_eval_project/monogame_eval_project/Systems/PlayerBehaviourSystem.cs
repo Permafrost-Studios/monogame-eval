@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended;
 using MonoGame.Extended.Entities;
 using MonoGame.Extended.Entities.Systems;
@@ -31,8 +32,35 @@ namespace monogame_eval_project.Systems
 
         public override void Update(GameTime gameTime)
         {
-            _sceneNodeMapper.Get(0).Rotation += (float)(_playerMapper.Get(0)._WalkSpeed * gameTime.ElapsedGameTime.TotalSeconds);
-            Debug.WriteLine("SPINNING");
+            //_sceneNodeMapper.Get(0).Rotation += (float)(_playerMapper.Get(0)._SpinSpeed * gameTime.ElapsedGameTime.TotalSeconds);
+
+            var KeyboardState = Keyboard.GetState();
+
+            Vector2 movementVector = new  Vector2(0, 0);
+
+            if (Keyboard.GetState().IsKeyDown(Keys.Right))
+            {
+                movementVector.X = 1;
+            }
+
+            if (Keyboard.GetState().IsKeyDown(Keys.Left))
+            {
+                movementVector.X = -1;
+            }
+
+            if (Keyboard.GetState().IsKeyDown(Keys.Up))
+            {
+                movementVector.Y = -1;
+            }
+
+            if (Keyboard.GetState().IsKeyDown(Keys.Down))
+            {
+                movementVector.Y = 1;
+            }
+
+            Vector2.Normalize(movementVector);
+
+            _sceneNodeMapper.Get(0).Position += movementVector * (float)(_playerMapper.Get(0)._WalkSpeed);
         }
     }
 }

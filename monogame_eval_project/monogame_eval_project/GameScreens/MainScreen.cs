@@ -29,8 +29,6 @@ namespace monogame_eval_project.GameScreens
         private SceneGraph _sceneGraph;
         private SceneNode _playerNode;
 
-        private float _speed = 0.15f;
-
         private World _world;
 
         Entity Player;
@@ -81,11 +79,8 @@ namespace monogame_eval_project.GameScreens
         void SpawnPlayer()
         {
             Player = _world.CreateEntity();
-            Player.Attach(new Transform2(0, 0));
             Player.Attach(new Player());
             Player.Attach(_playerNode);
-
-            Debug.WriteLine("I CAN RUN FUNCTIONSFSFSFSFDSFDSFF");
         }
     }
 }
