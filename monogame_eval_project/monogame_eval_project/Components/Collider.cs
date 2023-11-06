@@ -21,7 +21,9 @@ namespace monogame_eval_project.Components
         }
 
         //In pixels
-        public int Width;
-        public int Height;
+        public float _Width;
+        public float _Height;
+
+        public CollisionLayer _CollisionLayer;
     }
 }

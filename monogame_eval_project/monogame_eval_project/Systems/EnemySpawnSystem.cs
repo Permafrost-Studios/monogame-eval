@@ -41,6 +41,7 @@ namespace monogame_eval_project.Systems
             var enemy = CreateEntity();
             enemy.Attach(new Components.Enemy { _WalkSpeed = 2f, _Damage = 10f, _Health = 30f});
             enemy.Attach(newEnemyNode);
+            enemy.Attach(new Components.Collider { _CollisionLayer = Components.Collider.CollisionLayer.Enemy });
 
             SceneNode newEnemyNode2 = new SceneNode("Enemy", new Vector2(1300, 800));
 
@@ -51,6 +52,8 @@ namespace monogame_eval_project.Systems
             var enemy2 = CreateEntity();
             enemy2.Attach(new Components.Enemy { _WalkSpeed = 2f, _Damage = 10f, _Health = 30f });
             enemy2.Attach(newEnemyNode2);
+            enemy2.Attach(new Components.Collider { _CollisionLayer = Components.Collider.CollisionLayer.Enemy });
+
         }
 
         public override void Update(GameTime gameTime)
