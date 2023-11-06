@@ -4,6 +4,6 @@
     {
         public float _Health;
 
-        public float _WalkSpeed = 6.28f; //Roughly 2 pi - 1 rev per second
+        public float _WalkSpeed = 6.28f; //Roughly 2 pi - 1 rev per second - this was spin speed b4
     }
 }

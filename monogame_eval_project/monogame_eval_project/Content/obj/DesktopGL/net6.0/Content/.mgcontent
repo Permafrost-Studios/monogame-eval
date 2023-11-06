@@ -4,9 +4,11 @@
   <Platform>DesktopGL</Platform>
   <Config />
   <SourceFiles>
-    <File>C:/Users/proga/Documents/monogame-eval/monogame_eval_project/monogame_eval_project/Content/Art/pokeball.jpg</File>
+    <File>C:/Users/proga/Documents/monogame-eval/monogame_eval_project/monogame_eval_project/Content/PrototypeArt/Enemy.png</File>
+    <File>C:/Users/proga/Documents/monogame-eval/monogame_eval_project/monogame_eval_project/Content/PrototypeArt/pokeball.jpg</File>
   </SourceFiles>
   <DestFiles>
+    <File xsi:nil="true" />
     <File xsi:nil="true" />
   </DestFiles>
 </SourceFileCollection>

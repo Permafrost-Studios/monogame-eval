@@ -60,7 +60,10 @@ namespace monogame_eval_project.Systems
 
             Vector2.Normalize(movementVector);
 
-            _sceneNodeMapper.Get(0).Position += movementVector * (float)(_playerMapper.Get(0)._WalkSpeed);
+            foreach (var entity in ActiveEntities)
+            {
+                _sceneNodeMapper.Get(entity).Position += movementVector * (float)(_playerMapper.Get(entity)._WalkSpeed);
+            }
         }
     }
 }

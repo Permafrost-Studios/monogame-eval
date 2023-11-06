@@ -62,6 +62,16 @@ namespace monogame_eval_project
                 Exit();
             }
 
+            if (Keyboard.GetState().IsKeyDown(Keys.D1))
+            {
+                LoadMainMenuScreen();
+            }
+
+            if (Keyboard.GetState().IsKeyDown(Keys.D2))
+            {
+                LoadMainScreen();
+            }
+
 
             // TODO: Add your update logic here
 
@@ -79,6 +89,11 @@ namespace monogame_eval_project
         private void LoadMainScreen()
         {
             _screenManager.LoadScreen(new GameScreens.MainScreen(this), new FadeTransition(GraphicsDevice, Color.Black));
+        }
+
+        private void LoadMainMenuScreen()
+        {
+            _screenManager.LoadScreen(new GameScreens.MainMenuScreen(this), new FadeTransition(GraphicsDevice, Color.Red));
         }
     }
 }

@@ -33,27 +33,39 @@ namespace monogame_eval_project.GameScreens
 
         Entity Player;
 
+        Texture2D enemyTexture;
+
         public override void Initialize()
         {
             base.Initialize();
 
-            _world = new WorldBuilder()
+            /*_world = new WorldBuilder()
             .AddSystem(new PlayerBehaviourSystem())
-            .Build();
+            .AddSystem(new EnemyBehaviourSystem(_sceneGraph, enemyTexture))
+            .Build();*/
         }
         public override void LoadContent()
         {
             base.LoadContent();
 
-            //ballTexture = Content.Load<Texture2D>("Art/pokeBall");
+            //Load Textures
+            var playerTexture = Content.Load<Texture2D>("PrototypeArt/pokeball");
+            enemyTexture = Content.Load<Texture2D>("PrototypeArt/Enemy");
+
+            //Load Player START
             _sceneGraph = new SceneGraph();
 
             _playerNode = new SceneNode("Player", GraphicsDevice.Viewport.Bounds.Center.ToVector2());
-            var playerTexture = Content.Load<Texture2D>("Art/pokeball");
             var playerSprite = new Sprite(playerTexture);
             _playerNode.Entities.Add(new SpriteEntity(playerSprite));
 
             _sceneGraph.RootNode.Children.Add(_playerNode);
+            //Load Player END
+
+            _world = new WorldBuilder()
+            .AddSystem(new PlayerBehaviourSystem())
+            .AddSystem(new EnemySpawnSystem(_sceneGraph, enemyTexture))
+            .Build();
 
             SpawnPlayer();
         }
