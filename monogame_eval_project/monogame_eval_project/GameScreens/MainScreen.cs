@@ -65,6 +65,7 @@ namespace monogame_eval_project.GameScreens
             _world = new WorldBuilder()
             .AddSystem(new PlayerBehaviourSystem())
             .AddSystem(new EnemySpawnSystem(_sceneGraph, enemyTexture))
+            .AddSystem(new EnemyBehaviourSystem())
             .Build();
 
             SpawnPlayer();

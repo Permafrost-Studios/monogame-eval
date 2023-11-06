@@ -57,6 +57,10 @@ namespace monogame_eval_project
 
         protected override void Update(GameTime gameTime)
         {
+            // TODO: Add your update logic here
+
+            base.Update(gameTime);
+
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
             {
                 Exit();
@@ -71,11 +75,6 @@ namespace monogame_eval_project
             {
                 LoadMainScreen();
             }
-
-
-            // TODO: Add your update logic here
-
-            base.Update(gameTime);
         }
 
         protected override void Draw(GameTime gameTime)

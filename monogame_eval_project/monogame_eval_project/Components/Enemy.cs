@@ -10,7 +10,7 @@ namespace monogame_eval_project.Components
     {
         public float _Health;
 
-        public float _WalkSpeed = 6.28f;
+        public float _WalkSpeed;
 
         public float _Damage;
     }

@@ -31,19 +31,31 @@ namespace monogame_eval_project.Systems
 
         public override void Initialize(IComponentMapperService mapperService)
         {
-
-            var enemy = CreateEntity();
             SceneNode newEnemyNode = new SceneNode("Enemy", new Vector2(258, 258));
             Sprite enemySprite = new Sprite(_enemyTexture);
 
             newEnemyNode.Entities.Add(new SpriteEntity(enemySprite));
 
             _sceneGraph.RootNode.Children.Add(newEnemyNode);
+
+            var enemy = CreateEntity();
+            enemy.Attach(new Components.Enemy { _WalkSpeed = 2f, _Damage = 10f, _Health = 30f});
+            enemy.Attach(newEnemyNode);
+
+            SceneNode newEnemyNode2 = new SceneNode("Enemy", new Vector2(1300, 800));
+
+            newEnemyNode2.Entities.Add(new SpriteEntity(enemySprite));
+
+            _sceneGraph.RootNode.Children.Add(newEnemyNode2);
+
+            var enemy2 = CreateEntity();
+            enemy2.Attach(new Components.Enemy { _WalkSpeed = 2f, _Damage = 10f, _Health = 30f });
+            enemy2.Attach(newEnemyNode2);
         }
 
         public override void Update(GameTime gameTime)
         {
-            
+
         }
     }
 }
