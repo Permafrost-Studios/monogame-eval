@@ -40,8 +40,6 @@ namespace monogame_eval_project.Systems
 
         public override void Update(GameTime gameTime)
         {
-
-
             foreach (var entityID in ActiveEntities)
             {
                 if (_playerMapper.Has(entityID)) //Checking if it is a player entity
