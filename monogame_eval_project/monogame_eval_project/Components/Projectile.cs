@@ -6,14 +6,10 @@ using System.Threading.Tasks;
 
 namespace monogame_eval_project.Components
 {
-    public class Enemy
+    public class Projectile
     {
-        public float _Health;
+        public float _Speed;
 
-        public float _WalkSpeed;
-
-        public float _MeleeDamage;
-
-        public float _ProjectileDamage;
+        public float _Damage;
     }
 }

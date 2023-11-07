@@ -16,6 +16,7 @@ using MonoGame.Extended.Entities;
 using monogame_eval_project.Systems;
 using monogame_eval_project.Components;
 using System.Diagnostics;
+using Microsoft.Xna.Framework.Input;
 
 namespace monogame_eval_project.GameScreens
 {
@@ -63,17 +64,30 @@ namespace monogame_eval_project.GameScreens
             //Load Player END
 
             _world = new WorldBuilder()
-            .AddSystem(new PlayerBehaviourSystem())
+            .AddSystem(new PlayerBehaviourSystem(_sceneGraph))
             .AddSystem(new EnemySpawnSystem(_sceneGraph, enemyTexture))
             .AddSystem(new EnemyBehaviourSystem())
+            .AddSystem(new CollisionSystem())
             .Build();
 
             SpawnPlayer();
         }
 
+        bool tempBool = false;
+
         public override void Update(GameTime gameTime)
         {
             _world.Update(gameTime);
+
+            if (Keyboard.GetState().IsKeyDown(Keys.E))
+            {
+                //_sceneGraph.RootNode.Children.Remove((Player.Get<SceneNode>()));
+                if (tempBool == false) //It will try to run for multiple frames from default input otherwise
+                {
+                    Player.Get<Player>()._Health = -1f;
+                    tempBool = true;
+                }
+            }
         }
 
         public override void Draw(GameTime gameTime)
@@ -92,8 +106,9 @@ namespace monogame_eval_project.GameScreens
         void SpawnPlayer()
         {
             Player = _world.CreateEntity();
-            Player.Attach(new Player());
+            Player.Attach(new Player { _Health = 15f, _WalkSpeed = 10f});
             Player.Attach(_playerNode);
+            Player.Attach(new Components.Collider { _CollisionLayer = Components.Collider.CollisionLayer.Player, _Height = 250f, _Width = 250f });
         }
     }
 }
