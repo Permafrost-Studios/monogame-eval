@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace monogame_eval_project.Components.Abilities
 {
-    internal class AbilityHolder
+    public class AbilityHolder
     {
+        public List<Ability> Abilities = new List<Ability>(); //Can hold all the abilities that the thing currently has
     }
 }

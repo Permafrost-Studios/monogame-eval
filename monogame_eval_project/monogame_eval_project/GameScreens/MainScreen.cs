@@ -61,10 +61,11 @@ namespace monogame_eval_project.GameScreens
             //Load Player END
 
             _world = new WorldBuilder()
-            .AddSystem(new PlayerBehaviourSystem(_sceneGraph, Content))
-            .AddSystem(new EnemySpawnSystem(_sceneGraph, Content))
-            .AddSystem(new EnemyBehaviourSystem())
+            //.AddSystem(new EnemyBehaviourSystem())
             .AddSystem(new CollisionSystem())
+            .AddSystem(new MovementSystem())
+            .AddSystem(new PlayerBehaviourSystem(_sceneGraph, Content))
+            //.AddSystem(new EnemySpawnSystem(_sceneGraph, Content))
             .Build();
 
             SpawnPlayer();
@@ -103,9 +104,10 @@ namespace monogame_eval_project.GameScreens
         void SpawnPlayer()
         {
             Player = _world.CreateEntity();
-            Player.Attach(new Player { _Health = 15f, _WalkSpeed = 10f});
+            Player.Attach(new Player { _Health = 15f, _WalkSpeed = 192f});
             Player.Attach(_playerNode);
             Player.Attach(new Components.Collider { _CollisionLayer = Components.Collider.CollisionLayer.Player, _Height = 250f, _Width = 250f });
+            Player.Attach(new Moveable());
         }
     }
 }

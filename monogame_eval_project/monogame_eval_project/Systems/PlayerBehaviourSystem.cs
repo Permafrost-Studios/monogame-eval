@@ -20,8 +20,8 @@ namespace monogame_eval_project.Systems
 {
     public class PlayerBehaviourSystem : EntityUpdateSystem
     {
-        private ComponentMapper<SceneNode> _sceneNodeMapper;
         private ComponentMapper<Components.Player> _playerMapper;
+        private ComponentMapper<Components.Moveable> _moveableMapper;
 
         SceneGraph _sceneGraph;
 
@@ -31,7 +31,7 @@ namespace monogame_eval_project.Systems
         Texture2D bulletTexture;
 
         public PlayerBehaviourSystem(SceneGraph sceneGraph, ContentManager content)
-        : base(Aspect.All(typeof(Components.Player), typeof(SceneNode)))
+        : base(Aspect.All(typeof(Components.Player), typeof(Components.Moveable), typeof(SceneNode)))
         {
             _sceneGraph = sceneGraph;
             _content = content;
@@ -39,16 +39,12 @@ namespace monogame_eval_project.Systems
 
         public override void Initialize(IComponentMapperService mapperService)
         {
-            _sceneNodeMapper = mapperService.GetMapper<SceneNode>();
+            _moveableMapper = mapperService.GetMapper<Components.Moveable>();
             _playerMapper = mapperService.GetMapper<Components.Player>();
-
-            bulletTexture = _content.Load<Texture2D>("PrototypeArt/tile_0000");
         }
 
         public override void Update(GameTime gameTime)
         {
-            //_sceneNodeMapper.Get(0).Rotation += (float)(_playerMapper.Get(0)._SpinSpeed * gameTime.ElapsedGameTime.TotalSeconds);
-
             var KeyboardState = Keyboard.GetState();
 
             Vector2 movementVector = new  Vector2(0, 0);
@@ -73,34 +69,24 @@ namespace monogame_eval_project.Systems
                 movementVector.Y = 1;
             }
 
-            Vector2.Normalize(movementVector);
-
-            foreach (var entity in ActiveEntities)
+            if (true) //MAKE IT SO THAT THIS CONDITION IS IF SOMETHIGN HAS ACTUALLY BEEN PRESSED - POSSIBLE FIRST STEP TO ALLOW FOR ACCELERATION
             {
-                _sceneNodeMapper.Get(entity).Position += movementVector * (float)(_playerMapper.Get(entity)._WalkSpeed);
+                Vector2.Normalize(movementVector);
 
-                if (_playerMapper.Get(entity)._Health <= 0)
+                foreach (var entity in ActiveEntities)
                 {
-                    Die();
-                }
+                    _moveableMapper.Get(entity).Velocity = movementVector * (float)(_playerMapper.Get(entity)._WalkSpeed);
 
-                //To test out spawning the abilities
-                if (Keyboard.GetState().IsKeyDown(Keys.Space))
-                {
-                    SceneNode abilityNode = new SceneNode("BulletAttack", _sceneNodeMapper.Get(entity).Position + new Vector2(-200, 0)); //Have an actual concrete direction later
-                    Sprite abilitySprite = new Sprite(bulletTexture);
+                    if (_playerMapper.Get(entity)._Health <= 0)
+                    {
+                        Die();
+                    }
 
-                    abilityNode.Entities.Add(new SpriteEntity(abilitySprite));
+                    //To test out spawning the abilities
+                    if (Keyboard.GetState().IsKeyDown(Keys.Space))
+                    {
 
-                    _sceneGraph.RootNode.Children.Add(abilityNode);
-
-
-                    //Spawn Ability
-                    Entity abilityEntity = CreateEntity();
-                    abilityEntity.Attach(new Components.Abilities.ClawAbility { _Damage = 10f });
-                    abilityEntity.Attach(abilityNode);
-                    abilityEntity.Attach(new Components.Collider { _CollisionLayer = Components.Collider.CollisionLayer.PlayerProjectile, _Height = 25f, _Width = 25f });
-
+                    }
                 }
             }
         }
