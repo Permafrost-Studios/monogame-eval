@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended.Entities;
 using MonoGame.Extended.Entities.Systems;
@@ -22,15 +23,19 @@ namespace monogame_eval_project.Systems
 
         private Texture2D _enemyTexture;
 
-        public EnemySpawnSystem(SceneGraph sceneGraph, Texture2D enemyTexture)
+        private ContentManager _content;
+
+        public EnemySpawnSystem(SceneGraph sceneGraph, ContentManager content)
         : base(Aspect.All(typeof(Components.Enemy), typeof(SceneNode)))
         {
             _sceneGraph = sceneGraph;
-            _enemyTexture = enemyTexture;
+            _content = content;
         }
 
         public override void Initialize(IComponentMapperService mapperService)
         {
+            var _enemyTexture = _content.Load<Texture2D>("PrototypeArt/Enemy");
+
             SceneNode newEnemyNode = new SceneNode("Enemy", new Vector2(258, 258));
             Sprite enemySprite = new Sprite(_enemyTexture);
 

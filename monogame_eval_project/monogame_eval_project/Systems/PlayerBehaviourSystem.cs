@@ -1,15 +1,17 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended;
 using MonoGame.Extended.Entities;
 using MonoGame.Extended.Entities.Systems;
 using MonoGame.Extended.SceneGraphs;
-using monogame_eval_project.Components;
+using MonoGame.Extended.Sprites;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection.Metadata;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
@@ -23,16 +25,24 @@ namespace monogame_eval_project.Systems
 
         SceneGraph _sceneGraph;
 
-        public PlayerBehaviourSystem(SceneGraph sceneGraph)
+        private ContentManager _content;
+
+        //Ability Textures
+        Texture2D bulletTexture;
+
+        public PlayerBehaviourSystem(SceneGraph sceneGraph, ContentManager content)
         : base(Aspect.All(typeof(Components.Player), typeof(SceneNode)))
         {
             _sceneGraph = sceneGraph;
+            _content = content;
         }
 
         public override void Initialize(IComponentMapperService mapperService)
         {
             _sceneNodeMapper = mapperService.GetMapper<SceneNode>();
             _playerMapper = mapperService.GetMapper<Components.Player>();
+
+            bulletTexture = _content.Load<Texture2D>("PrototypeArt/tile_0000");
         }
 
         public override void Update(GameTime gameTime)
@@ -72,6 +82,25 @@ namespace monogame_eval_project.Systems
                 if (_playerMapper.Get(entity)._Health <= 0)
                 {
                     Die();
+                }
+
+                //To test out spawning the abilities
+                if (Keyboard.GetState().IsKeyDown(Keys.Space))
+                {
+                    SceneNode abilityNode = new SceneNode("BulletAttack", _sceneNodeMapper.Get(entity).Position + new Vector2(-200, 0)); //Have an actual concrete direction later
+                    Sprite abilitySprite = new Sprite(bulletTexture);
+
+                    abilityNode.Entities.Add(new SpriteEntity(abilitySprite));
+
+                    _sceneGraph.RootNode.Children.Add(abilityNode);
+
+
+                    //Spawn Ability
+                    Entity abilityEntity = CreateEntity();
+                    abilityEntity.Attach(new Components.Abilities.ClawAbility { _Damage = 10f });
+                    abilityEntity.Attach(abilityNode);
+                    abilityEntity.Attach(new Components.Collider { _CollisionLayer = Components.Collider.CollisionLayer.PlayerProjectile, _Height = 25f, _Width = 25f });
+
                 }
             }
         }

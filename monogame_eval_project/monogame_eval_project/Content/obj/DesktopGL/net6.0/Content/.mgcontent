@@ -6,8 +6,10 @@
   <SourceFiles>
     <File>C:/Users/proga/Documents/monogame-eval/monogame_eval_project/monogame_eval_project/Content/PrototypeArt/Enemy.png</File>
     <File>C:/Users/proga/Documents/monogame-eval/monogame_eval_project/monogame_eval_project/Content/PrototypeArt/pokeball.jpg</File>
+    <File>C:/Users/proga/Documents/monogame-eval/monogame_eval_project/monogame_eval_project/Content/PrototypeArt/tile_0000.png</File>
   </SourceFiles>
   <DestFiles>
+    <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
   </DestFiles>
