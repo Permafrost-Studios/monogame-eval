@@ -7,10 +7,13 @@ using MonoGame.Extended.Entities;
 using MonoGame.Extended.Entities.Systems;
 using MonoGame.Extended.SceneGraphs;
 using MonoGame.Extended.Sprites;
+using monogame_eval_project.Components;
+using monogame_eval_project.Components.Abilities;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection.Metadata;
 using System.Security.Cryptography;
 using System.Text;
@@ -20,18 +23,28 @@ namespace monogame_eval_project.Systems
 {
     public class PlayerBehaviourSystem : EntityUpdateSystem
     {
-        private ComponentMapper<Components.Player> _playerMapper;
         private ComponentMapper<Components.Moveable> _moveableMapper;
+        private ComponentMapper<Components.Life> _healthMapper;
+        private ComponentMapper<Components.Abilities.StraightProjectileAbility> _abilitiesMapper;
+        private ComponentMapper<SceneNode> _sceneNodeMapper;
 
+        ContentManager _content;
         SceneGraph _sceneGraph;
 
-        private ContentManager _content;
-
         //Ability Textures
-        Texture2D bulletTexture;
+
+        public float _playerWalkSpeed = 192f; //Roughly 2 pi - 1 rev per second - this was spin speed b4
+        public float _walkAcceleration = 0f;
+
+        bool facingRight;
+
+        Entity PlayerEntity;
+        SpriteEntity playerRightSpriteEntity;
+        SpriteEntity playerLeftSpriteEntity;
+        SceneNode _playerNode;
 
         public PlayerBehaviourSystem(SceneGraph sceneGraph, ContentManager content)
-        : base(Aspect.All(typeof(Components.Player), typeof(Components.Moveable), typeof(SceneNode)))
+        : base(Aspect.All(typeof(Components.Player), typeof(Components.Moveable), typeof(SceneNode), typeof(Components.Life)))
         {
             _sceneGraph = sceneGraph;
             _content = content;
@@ -40,53 +53,66 @@ namespace monogame_eval_project.Systems
         public override void Initialize(IComponentMapperService mapperService)
         {
             _moveableMapper = mapperService.GetMapper<Components.Moveable>();
-            _playerMapper = mapperService.GetMapper<Components.Player>();
+            _healthMapper = mapperService.GetMapper<Components.Life>();
+            _abilitiesMapper = mapperService.GetMapper<Components.Abilities.StraightProjectileAbility>();
+            _sceneNodeMapper = mapperService.GetMapper<SceneNode>();
+
+            facingRight = true;
+
+            SpawnPlayer();
         }
 
         public override void Update(GameTime gameTime)
         {
-            var KeyboardState = Keyboard.GetState();
-
-            Vector2 movementVector = new  Vector2(0, 0);
-
-            if (Keyboard.GetState().IsKeyDown(Keys.Right))
+            foreach (var entity in ActiveEntities)
             {
-                movementVector.X = 1;
-            }
+                var KeyboardState = Keyboard.GetState();
 
-            if (Keyboard.GetState().IsKeyDown(Keys.Left))
-            {
-                movementVector.X = -1;
-            }
+                Vector2 movementVector = new Vector2(0, 0);
 
-            if (Keyboard.GetState().IsKeyDown(Keys.Up))
-            {
-                movementVector.Y = -1;
-            }
+                if (Keyboard.GetState().IsKeyDown(Keys.Right))
+                {
+                    movementVector.X = 1;
 
-            if (Keyboard.GetState().IsKeyDown(Keys.Down))
-            {
-                movementVector.Y = 1;
-            }
+                    if (facingRight == false)
+                    {
+                        FlipFacingDirection(entity);
+                    }
+                }
 
-            if (true) //MAKE IT SO THAT THIS CONDITION IS IF SOMETHIGN HAS ACTUALLY BEEN PRESSED - POSSIBLE FIRST STEP TO ALLOW FOR ACCELERATION
-            {
+                if (Keyboard.GetState().IsKeyDown(Keys.Left))
+                {
+                    movementVector.X = -1;
+
+                    if (facingRight == true)
+                    {
+                        FlipFacingDirection(entity);
+                    }
+                }
+
+                if (Keyboard.GetState().IsKeyDown(Keys.Up))
+                {
+                    movementVector.Y = -1;
+                }
+
+                if (Keyboard.GetState().IsKeyDown(Keys.Down))
+                {
+                    movementVector.Y = 1;
+                }
                 Vector2.Normalize(movementVector);
 
-                foreach (var entity in ActiveEntities)
+                _moveableMapper.Get(entity).Velocity = movementVector * (float)(_playerWalkSpeed);
+
+                if (_healthMapper.Get(entity)._Health <= 0)
                 {
-                    _moveableMapper.Get(entity).Velocity = movementVector * (float)(_playerMapper.Get(entity)._WalkSpeed);
+                    Die();
+                }
 
-                    if (_playerMapper.Get(entity)._Health <= 0)
-                    {
-                        Die();
-                    }
-
-                    //To test out spawning the abilities
-                    if (Keyboard.GetState().IsKeyDown(Keys.Space))
-                    {
-
-                    }
+                //To test out spawning the abilities
+                if (Keyboard.GetState().IsKeyDown(Keys.F))
+                {
+                    _abilitiesMapper.Put(entity, new Components.Abilities.StraightProjectileAbility());
+                    //GetEntity(entity).Add(new StraightProjectileAbility());
                 }
             }
         }
@@ -108,6 +134,49 @@ namespace monogame_eval_project.Systems
 
                 //Transition to the end game screen or something
             }
+        }
+
+        void FlipFacingDirection(int entityID)
+        {
+            switch (facingRight)
+            {
+                case true:                    
+                    _playerNode.Entities.Remove(playerRightSpriteEntity);
+                    _playerNode.Entities.Add(playerLeftSpriteEntity);
+                    break;
+                case false:
+                    _playerNode.Entities.Remove(playerLeftSpriteEntity);
+                    _playerNode.Entities.Add(playerRightSpriteEntity);
+                    break;
+            }
+
+            facingRight = !facingRight;
+        }
+
+        void SpawnPlayer()
+        {
+            //Load Player START
+            var playerTextureRight = _content.Load<Texture2D>("PrototypeArt/badbot-shot");
+            var playerTextureLeft = _content.Load<Texture2D>("PrototypeArt/badbot-shot-left");
+
+            _playerNode = new SceneNode("Player", new Vector2(960, 540));
+
+            Sprite playerRightSprite = new Sprite(playerTextureRight);
+            playerRightSpriteEntity = new SpriteEntity(playerRightSprite);
+            Sprite playerLeftSprite = new Sprite(playerTextureLeft);
+            playerLeftSpriteEntity = new SpriteEntity(playerLeftSprite);
+
+            _playerNode.Entities.Add(playerRightSpriteEntity);
+
+            _sceneGraph.RootNode.Children.Add(_playerNode);
+            //Load Player END
+
+            PlayerEntity = CreateEntity();
+            PlayerEntity.Attach(new Player());
+            PlayerEntity.Attach(_playerNode);
+            PlayerEntity.Attach(new Life(10f));
+            PlayerEntity.Attach(new Collider(Collider.CollisionLayer.Player, 250f, 250f));
+            PlayerEntity.Attach(new Moveable());
         }
     }
 }

@@ -8,16 +8,21 @@ namespace monogame_eval_project.Components
 {
     public class Collider
     {
+        public Collider(CollisionLayer layer, float width, float height) 
+        { 
+            _CollisionLayer = layer;
+            _Width = width;
+            _Height = height;
+        }
+
         public enum CollisionLayer 
         { 
             None,
             Solid,
             Player,
             Enemy,
-            EnemyProjectile, //Attack types
-            EnemyMelee,
-            PlayerProjectile,
-            PlayerMelee
+            EnemyAttack, //Attack types
+            PlayerAttack
         }
 
         //In pixels

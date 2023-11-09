@@ -65,30 +65,21 @@ namespace monogame_eval_project.Systems
                         {
                             case Components.Collider.CollisionLayer.Enemy:
                                 {
-                                    if (CheckCollision(_colliderMapper.Get(entityID), _sceneNodeMapper.Get(entityID), 
-                                        _colliderMapper.Get(eID), _sceneNodeMapper.Get(eID)))
-                                    {
-                                        //Deal the damage of the Enemy to the player
-                                        Enemy enemyComponent = GetEntity(eID).Get<Enemy>();
-                                        Player playerComponent = GetEntity(entityID).Get<Player>();
-
-                                        playerComponent._Health -= enemyComponent._MeleeDamage;
-
-                                        //playerComponent._Health = -1;
-                                    }
+                                    //Not actually just the collision between the player but the collision with the enemy attack
+                                    //  - Maybe make this trigger the enemy attack to start activating with cooldowns and allat
 
                                     break;
                                 }
-                            case Components.Collider.CollisionLayer.EnemyProjectile:
+                            case Components.Collider.CollisionLayer.EnemyAttack:
                                 {
                                     if (CheckCollision(_colliderMapper.Get(entityID), _sceneNodeMapper.Get(entityID),
                                         _colliderMapper.Get(eID), _sceneNodeMapper.Get(eID)))
                                     {
-                                        //Deal the damage of the Projectile to the player
-                                        Projectile projectileComponent = GetEntity(eID).Get<Projectile>(); //Projectile components are identical for enemies and players
-                                        Player playerComponent = GetEntity(entityID).Get<Player>();
+                                        //Deal the damage of the Enemy to the player
+                                        Damager enemyDamager = GetEntity(eID).Get<Damager>();
+                                        Life healthComponent = GetEntity(entityID).Get<Life>();
 
-                                        playerComponent._Health -= projectileComponent._Damage;
+                                        healthComponent._Health -= enemyDamager._Damage;
                                     }
 
                                     break;

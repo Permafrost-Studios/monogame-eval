@@ -18,11 +18,6 @@ namespace monogame_eval_project.Systems
     {
         private SceneGraph _sceneGraph;
 
-        private ComponentMapper<Components.Enemy> _enemyMapper;
-        private ComponentMapper<SceneNode> _sceneNodeMapper;
-
-        private Texture2D _enemyTexture;
-
         private ContentManager _content;
 
         public EnemySpawnSystem(SceneGraph sceneGraph, ContentManager content)
@@ -44,9 +39,12 @@ namespace monogame_eval_project.Systems
             _sceneGraph.RootNode.Children.Add(newEnemyNode);
 
             var enemy = CreateEntity();
-            enemy.Attach(new Components.Enemy { _WalkSpeed = 2f, _MeleeDamage = 10f, _Health = 30f});
+            enemy.Attach(new Components.Enemy());
             enemy.Attach(newEnemyNode);
-            enemy.Attach(new Components.Collider { _CollisionLayer = Components.Collider.CollisionLayer.Enemy, _Height = 500f, _Width = 500f });
+            enemy.Attach(new Components.Collider (Components.Collider.CollisionLayer.Enemy, 500f, 500f));
+            enemy.Attach(new Components.Moveable { Acceleration = Vector2.One * 100 });
+            enemy.Attach(new Components.Damager(10f));
+            enemy.Attach(new Components.Life(100f));
 
             /*
             SceneNode newEnemyNode2 = new SceneNode("Enemy", new Vector2(1300, 800));

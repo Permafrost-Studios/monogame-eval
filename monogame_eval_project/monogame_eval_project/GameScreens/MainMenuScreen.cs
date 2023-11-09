@@ -22,8 +22,6 @@ namespace monogame_eval_project.GameScreens
 
         private World _world;
 
-        Entity Player;
-
         public override void Initialize()
         {
             base.Initialize();

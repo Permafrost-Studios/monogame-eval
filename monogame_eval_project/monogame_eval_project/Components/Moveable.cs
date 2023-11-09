@@ -11,6 +11,6 @@ namespace monogame_eval_project.Components
     {
         public Vector2 Velocity;
 
-        public Vector2 Acceleration = Vector2.Zero; //Explicity setting it to zero by default just in case
+        public Vector2 Acceleration; //Explicity setting it to zero by default just in case
     }
 }
